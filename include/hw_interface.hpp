@@ -11,6 +11,6 @@ namespace folders
     
     _folder_ get_instances();
 
-    void walk_dir(_folder_& dir, const std::string& path, std::string& f_path);
+    void walk_dir(_folder_& dir);
 
 };

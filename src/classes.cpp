@@ -9,12 +9,14 @@ std::string to_lowercase(std::string s)
     [](unsigned char c) { return std::tolower(c); });
     return s;
 };
+
 std::string_view to_lowercase_view(std::string s)
 {
     std::transform(s.begin(), s.end(), s.begin(),
     [](unsigned char c) { return std::tolower(c); });
     return s;
 };
+
 /// \brief TIA type size lookup table: {byteCount, bitCount}.
 /// \details Maps TIA basic types to byte/bit sizes used for offset calculations.
 /// Example: {"bool",{0,1}}, {"int",{2,0}}, {"real",{4,0}}, {"string",{256,0}}.
@@ -83,11 +85,11 @@ static inline bool variant_matches(const Value& lhs,
         [](const std::string& a, const std::string& b) 
         { return contains(to_lowercase_view(a),to_lowercase_view(b)); },
 
-        [](bool a, bool b) { return a  &&  b; },
+        [](bool a, bool b) { return a == b; },
 
         [](int a, int b)   { return a == b; },
 
-        [](auto const&, auto const&) {return false; }
+        [](auto const&, auto const&) { return false; }
     }, lhs, rhs);
 }
 
@@ -317,8 +319,6 @@ Value translate::parse_type(std::string& input)
     std::string input_low = to_lowercase(input); 
     if( input_low == "true" || input_low == "false")
         return parse_bool(input_low);
-    
-       // std::cout << typeid().name() << "\n";
     return input;
 }
 

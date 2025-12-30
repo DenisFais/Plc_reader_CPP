@@ -1,9 +1,9 @@
 
-if (NOT EXISTS "C:/Users/faiss/Documents/plc_reader_CPP/build/win/_deps/glfw-build/install_manifest.txt")
-    message(FATAL_ERROR "Cannot find install manifest: \"C:/Users/faiss/Documents/plc_reader_CPP/build/win/_deps/glfw-build/install_manifest.txt\"")
+if (NOT EXISTS "C:/Users/faiss/Documents/Projects/plc_reader_CPP/build/win/_deps/glfw-build/install_manifest.txt")
+    message(FATAL_ERROR "Cannot find install manifest: \"C:/Users/faiss/Documents/Projects/plc_reader_CPP/build/win/_deps/glfw-build/install_manifest.txt\"")
 endif()
 
-file(READ "C:/Users/faiss/Documents/plc_reader_CPP/build/win/_deps/glfw-build/install_manifest.txt" files)
+file(READ "C:/Users/faiss/Documents/Projects/plc_reader_CPP/build/win/_deps/glfw-build/install_manifest.txt" files)
 string(REGEX REPLACE "\n" ";" files "${files}")
 
 foreach (file ${files})

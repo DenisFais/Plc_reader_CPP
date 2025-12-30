@@ -36,12 +36,20 @@ void NetManager::plc_data_retrieve(int db_nr,int size,std::vector<unsigned char>
         std::cerr << "ERRORE: buffer è null!\n";
     }
     if (Client.ConnectTo(ip_selected.value().c_str(), 0, 1) == 0){
-        int res= Client.DBRead(db_nr,0,size,buffer->data());
+        int res = Client.DBRead(db_nr,0,size,buffer->data()) ;
         Client.Disconnect();
+        if(res != 0) 
+        {
+            std::cerr<<"Error reading area: "<< res << "DB nr: "<< db_nr<<"size: "<<size<< "\n";
+            return;
+        }
+        std::cout<< "client read done\n";
     }
-    else{ 
+    else
+    { 
         std::cerr<<"Error connecting to client\n";
-        return ;}
+        return ;
+    }
 }
 
 /// Connects to the active device and writes data to the specified PLC datablock.
@@ -92,7 +100,7 @@ std::string DatabaseManager::get_db_path()const{return db_scope.path;}
 int DatabaseManager::get_db_default_number()const{return db_scope.default_number;} 
       
 /// Returns the calculated maximum size of the current database. =^.^=
-int DatabaseManager::get_db_size()const{return database->get_max_offset().first;}
+int DatabaseManager::get_db_size()const{return  database->get_max_offset().second >0 ? database->get_max_offset().first+1 : database->get_max_offset().first+1 ;}
 
 /// Returns the current database object.
 std::shared_ptr<DB> DatabaseManager::get_db(){return database;}
@@ -117,7 +125,6 @@ void FilterManager::set_mode(std::shared_ptr<DB> db_ptr){ if(filter == nullptr) 
 void FilterManager::reset_mode()
 {
     if(filter != nullptr)filter->resetAll() ;
-    filters.bool_el.reset();
     filters.comment.reset();
     filters.name.reset();
     filters.value_in.reset();
@@ -139,7 +146,7 @@ CommManager::~CommManager()=default;
 
 /// Reads PLC data through NetManager and updates the DatabaseManager with the new buffer.
 void CommManager::get_plc_data(){
-    NetMan.plc_data_retrieve(DataMan.get_db_default_number(),DataMan.get_db_size()+1,&buffer);
+    NetMan.plc_data_retrieve(DataMan.get_db_default_number(),DataMan.get_db_size(),&buffer);
     DataMan.set_db_data(buffer);
 }
 

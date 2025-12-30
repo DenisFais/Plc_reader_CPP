@@ -71,7 +71,7 @@ rule C_STATIC_LIBRARY_LINKER__glfw_
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\mingw64\bin\cmake.exe --regenerate-during-build -SC:\Users\faiss\Documents\plc_reader_CPP -BC:\Users\faiss\Documents\plc_reader_CPP\build\win
+  command = C:\mingw64\bin\cmake.exe --regenerate-during-build -SC:\Users\faiss\Documents\Projects\plc_reader_CPP -BC:\Users\faiss\Documents\Projects\plc_reader_CPP\build\win
   description = Re-running CMake...
   generator = 1
 

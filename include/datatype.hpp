@@ -142,7 +142,6 @@ namespace Filter
         std::optional<Value> value_in;
         std::optional<std::string> name;
         std::optional<std::string> comment;
-        std::optional<bool> bool_el;
         void reset();
     };
 };

@@ -38,7 +38,8 @@ void MainGUIController::draw()
     upper_bar->Draw();
     ImGui::End();
     y += header_h + ImGui::GetStyle().ItemSpacing.y; 
-    if (CommMan->DataMan.get_db() != nullptr) {
+    if (CommMan->DataMan.get_db() != nullptr) 
+    {
         // Filter bar
         ImGui::SetNextWindowPos(ImVec2(x, y));
         ImGui::SetNextWindowSize(ImVec2(width, filter_h));
@@ -200,22 +201,11 @@ void FilterBar::draw()
     ImGui::SetNextItemWidth(140);
     if (ImGui::InputText("Value", value_buf.data(), (int)value_buf.size())) {
         std::string v = value_buf.data();
-        if(v.find("/bool:") != v.npos) v = v.substr(v.find(":")+1,v.size());
-
-        Value v_;
-        v_ = translate::parse_type(v);
-        if (std::holds_alternative<std::string>(v_) && v != "" || std::holds_alternative<int>(v_))
-        {
-            f_el->value_in  = v_;
-            f_el->bool_el.reset();
-        }
-
-        else if(std::holds_alternative<bool>(v_))
-        {
+        Value v_ = translate::parse_type(v);
+        if (v != "" )
+            f_el->value_in  = v_;  
+        else 
             f_el->value_in.reset();
-            f_el->bool_el = std::get<bool>(v_);
-        }
-        else if( v == "" ) f_el->value_in.reset();
     }   
 
     
@@ -271,26 +261,24 @@ void Body::Draw_node(const VariantElement& element,int& depth_in){
             if(ptr->get_vis())
                 if (ImGui::TreeNodeEx(label.c_str(),ImGuiTreeNodeFlags_Leaf| ImGuiTreeNodeFlags_DefaultOpen|ImGuiTreeNodeFlags_Framed|ImGuiTreeNodeFlags_OpenOnDoubleClick)) {
                     Value data=ptr->get_data();
-                    std::string data_label  = "Data";
-                    ImGui::Text("%s: ", data_label.c_str());
                     ImGui::SetNextItemWidth(300);
                     ImGui::SameLine();
                     std::visit([&](auto& val) {
                         using V = std::decay_t<decltype(val)>;
                         if constexpr (std::is_same_v<V, int>) {
-                            if (ImGui::InputScalar(("##"+data_label).c_str(),ImGuiDataType_S32, &val)) {
+                            if (ImGui::InputScalar("##",ImGuiDataType_S32, &val)) {
                                 
                             }
                         } 
                         else if constexpr (std::is_same_v<V, bool>) {
-                            if (ImGui::Checkbox(("##"+data_label).c_str(), &val)) {
+                            if (ImGui::Checkbox("##", &val)) {
                                 
                             }
                         } 
                         else if constexpr (std::is_same_v<V, std::string>) {
                             static char buffer[128];
                             strncpy(buffer, val.c_str(), sizeof(buffer));
-                            if (ImGui::InputText(("##"+data_label).c_str(), buffer, IM_ARRAYSIZE(buffer))) {
+                            if (ImGui::InputText("##", buffer, IM_ARRAYSIZE(buffer))) {
                                 
                             }
                         }

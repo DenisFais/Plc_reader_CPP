@@ -204,7 +204,7 @@ struct db_footer;
 /// \details Structure: [BOM] + one or more UDTs + DB header + DB body + DB footer.
 struct complete_datablock : pt::seq<
     pt::opt<utf8_bom>,
-    pt::plus<udt_raw_header>,
+    pt::opt<pt::plus<udt_raw_header>>,
     db_header,
     pt::plus<db_body>,
     db_footer

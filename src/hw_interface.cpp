@@ -15,27 +15,22 @@
 ///
 /// @param[out] dir     Destination node representing the current folder; will receive children.
 /// @param[in]  path    Filesystem path to traverse (on disk).
-/// @param[in,out] f_path Accumulated logical path stored in the model; updated during traversal.
-void folders::walk_dir(_folder_& dir, const std::string& path, std::string& f_path)
+void folders::walk_dir(_folder_& dir)
 {
-    for (const auto& i : fs::directory_iterator(path))
+    for (const auto& i : fs::directory_iterator(dir.path))
     {
         if (i.is_directory())
         {
             _folder_ subfolder(i.path().filename().string());
-            f_path += "/"+subfolder.name;
-            subfolder.path=f_path;
-            walk_dir(subfolder, i.path().string(),f_path);   
-            dir.elements.push_back(std::move(subfolder));
-        
+            subfolder.path=dir.path+"/"+subfolder.name;
+            walk_dir(subfolder);   
+            dir.elements.push_back(subfolder);
         }
         else
         {
-            auto name = i.path().filename().string();
-            //name = name.substr(0,name.find(".db"));
-            _file_ new_file(name);
-            new_file.path=f_path+"/"+new_file.name;
-            dir.elements.push_back(std::move(new_file));
+            _file_ new_file(i.path().filename().string());
+            new_file.path=dir.path+"/"+new_file.name;
+            dir.elements.push_back(new_file);
         }
     }
 }
@@ -54,15 +49,15 @@ _folder_ folders::get_instances()
     auto base =std::filesystem::current_path().string();
 
     std::string directory = base+"/root";
-    std::string full_path = directory;
-
+    
     if (!fs::exists(directory) || !fs::is_directory(directory))
     {
         std::cerr << "Missing directory or wrong path, creating new.\n";
         fs::create_directory(directory);
     }
     _folder_ root("Projects");
-    walk_dir(root, directory,full_path);
+    root.path = directory;
+    walk_dir(root);
     return root;
 }
 
